@@ -17,6 +17,14 @@ public:
     : items(itemArray), itemCount(count), x(xPos), y(yPos), textSize(size), textColor(color), selectedIndex(0), onItemSelect(itemSelectHandler) {}
 
   void render(Adafruit_SSD1306 &display) override {
+    if (itemCount == 0) {
+      return;
+    }
+
+    if (selectedIndex >= itemCount) {
+      selectedIndex = itemCount - 1;
+    }
+
     display.setTextSize(textSize);
     int16_t yOffset = y;
     for (uint8_t i = 0; i < itemCount; i++) {
@@ -33,11 +41,17 @@ public:
   }
 
   void nextItem() {
+    if (itemCount == 0) {
+      return;
+    }
     selectedIndex = (selectedIndex + 1) % itemCount;
     if (onItemSelect) onItemSelect(selectedIndex);
   }
 
   void previousItem() {
+    if (itemCount == 0) {
+      return;
+    }
     selectedIndex = (selectedIndex == 0) ? itemCount - 1 : selectedIndex - 1;
     if (onItemSelect) onItemSelect(selectedIndex);
   }

@@ -2,6 +2,7 @@
 #define UILINECHART_H
 
 #include "UIComponent.h"
+#include <string.h>
 #define MAX_DATA_POINTS 100
 
 class UILineChart : public Component {
@@ -19,10 +20,11 @@ public:
     display.drawRect(x, y, width, height, WHITE);
     // Plot data
     if (dataCount > 1) {
-      for (uint8_t i = 0; i < dataCount - 1; i++) {
-        int16_t x0 = x + (i * (width - 2)) / (MAX_DATA_POINTS - 1) + 1;
+      uint8_t pointSpan = dataCount - 1;
+      for (uint8_t i = 0; i < pointSpan; i++) {
+        int16_t x0 = x + (i * (width - 2)) / pointSpan + 1;
         int16_t y0 = y + height - 1 - (data[i] * (height - 2)) / 100;
-        int16_t x1 = x + ((i + 1) * (width - 2)) / (MAX_DATA_POINTS - 1) + 1;
+        int16_t x1 = x + ((i + 1) * (width - 2)) / pointSpan + 1;
         int16_t y1 = y + height - 1 - (data[i + 1] * (height - 2)) / 100;
         display.drawLine(x0, y0, x1, y1, lineColor);
       }

@@ -15,7 +15,7 @@ public:
   UIRenderer(Adafruit_SSD1306 &disp) : display(disp) {}
 
   void addComponent(Component* component) {
-    if (componentCount < MAX_COMPONENTS) {
+    if (component != nullptr && componentCount < MAX_COMPONENTS) {
       components[componentCount++] = component;
     }
   }
@@ -23,7 +23,9 @@ public:
   void render() {
     display.clearDisplay();
     for (uint8_t i = 0; i < componentCount; i++) {
-      components[i]->render(display);
+      if (components[i] != nullptr) {
+        components[i]->render(display);
+      }
     }
     display.display();
   }

@@ -20,9 +20,33 @@ public:
       bgColor(bg), knobColor(knob), onValueChange(valueChangeHandler) {}
 
   void render(Adafruit_SSD1306 &display) override {
+    if (width <= 0 || height <= 0) {
+      return;
+    }
+
     display.drawRect(x, y, width, height, bgColor);
-    int16_t knobX = x + ((value - minValue) * (width - 4)) / (maxValue - minValue);
-    display.fillRect(knobX, y + 2, 4, height - 4, knobColor);
+
+    int16_t renderMin = minValue;
+    int16_t renderMax = maxValue;
+    if (renderMax < renderMin) {
+      int16_t temp = renderMin;
+      renderMin = renderMax;
+      renderMax = temp;
+    }
+
+    int16_t knobWidth = (width <= 4) ? width : 4;
+    int16_t knobHeight = (height <= 4) ? height : (height - 4);
+    int16_t knobY = (height <= 4) ? y : (y + 2);
+    int16_t knobX = x;
+
+    if (renderMax > renderMin && width > knobWidth) {
+      int16_t clampedValue = constrain(value, renderMin, renderMax);
+      knobX = x + ((clampedValue - renderMin) * (width - knobWidth)) / (renderMax - renderMin);
+    } else if (width > knobWidth) {
+      knobX = x + (width - knobWidth) / 2;
+    }
+
+    display.fillRect(knobX, knobY, knobWidth, knobHeight, knobColor);
   }
 
   void setValue(int16_t newValue) {

@@ -28,6 +28,14 @@ public:
   void render(Adafruit_SSD1306 &display) override {
     // Draw dropdown box
     display.drawRect(x, y, width, height, bgColor);
+    if (itemCount == 0) {
+      return;
+    }
+
+    if (selectedIndex >= itemCount) {
+      selectedIndex = itemCount - 1;
+    }
+
     // Display selected item
     display.setTextSize(1);
     display.setTextColor(textColor);
@@ -51,18 +59,25 @@ public:
   }
 
   void selectNext() {
-    if (expanded) {
+    if (expanded && itemCount > 0) {
       selectedIndex = (selectedIndex + 1) % itemCount;
     }
   }
 
   void selectPrevious() {
-    if (expanded) {
+    if (expanded && itemCount > 0) {
       selectedIndex = (selectedIndex == 0) ? itemCount - 1 : selectedIndex - 1;
     }
   }
 
   void confirmSelection() {
+    if (itemCount == 0) {
+      expanded = false;
+      return;
+    }
+    if (selectedIndex >= itemCount) {
+      selectedIndex = itemCount - 1;
+    }
     if (onItemSelect) onItemSelect(selectedIndex);
     expanded = false;
   }

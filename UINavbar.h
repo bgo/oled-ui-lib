@@ -28,7 +28,7 @@ public:
       itemCount(0), selectedIndex(0) {}
 
   void addItem(UINavbarItem* item) {
-    if (itemCount < MAX_NAV_ITEMS) {
+    if (item != nullptr && itemCount < MAX_NAV_ITEMS) {
       items[itemCount++] = item;
     }
   }
@@ -37,11 +37,23 @@ public:
     // Draw navbar background
     display.fillRect(x, y, width, height, bgColor);
 
+    if (itemCount == 0) {
+      return;
+    }
+
+    if (selectedIndex >= itemCount) {
+      selectedIndex = itemCount - 1;
+    }
+
     // Calculate width per item
     int16_t itemWidth = width / itemCount;
 
     // Render items
     for (uint8_t i = 0; i < itemCount; i++) {
+      if (items[i] == nullptr) {
+        continue;
+      }
+
       int16_t itemX = x + i * itemWidth;
       if (i == selectedIndex) {
         // Highlight selected item
@@ -57,16 +69,29 @@ public:
   }
 
   void nextItem() {
+    if (itemCount == 0) {
+      return;
+    }
     selectedIndex = (selectedIndex + 1) % itemCount;
   }
 
   void previousItem() {
+    if (itemCount == 0) {
+      return;
+    }
     selectedIndex = (selectedIndex == 0) ? itemCount - 1 : selectedIndex - 1;
   }
 
   void selectItem() {
-    if (items[selectedIndex]->onSelect) {
-      items[selectedIndex]->onSelect();
+    if (itemCount == 0) {
+      return;
+    }
+    if (selectedIndex >= itemCount) {
+      selectedIndex = itemCount - 1;
+    }
+    UINavbarItem* item = items[selectedIndex];
+    if (item != nullptr && item->onSelect) {
+      item->onSelect();
     }
   }
 };

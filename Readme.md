@@ -5,7 +5,7 @@ A component-based UI library for SSD1306 oled screens, tested on 128x64 version.
 - **Adafruit SSD1306 Library**: Install via Arduino Library Manager.
 
 ## Usage
-Include relevant headrs in your sketch.
+Include relevant headers in your sketch.
 ```cpp
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
@@ -17,7 +17,7 @@ Include relevant headrs in your sketch.
 ```
 
 ### Basic Example
-This example displayes a label and a button. See examples/ folder for further usage examples.
+This example displays a label and a button. See examples/ folder for further usage examples.
 ```cpp
 #include <SPI.h>
 #include <Wire.h>
@@ -71,6 +71,12 @@ void loop() {
   onButtonClick();
 }
 ```
+
+### Edge-case Behavior
+- `UIRenderer` ignores `nullptr` components.
+- `UINavbar`, `UIList`, and `UIDropdownMenu` operations are safe no-ops when no items are present.
+- `UINavbar` ignores `nullptr` items.
+- `UISlider` avoids divide-by-zero for invalid ranges (`minValue >= maxValue`) and renders a deterministic fallback knob.
 
 ### Components Reference
 
